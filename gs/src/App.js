@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Button, Form, Card } from "react-bootstrap";
 import "./App.css";
 import "@fontsource/montserrat/900.css"; // Defaults to weight 400
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const CLIENT_ID = "e6e3c67c4d8d40158cca8c96aeb2e3ac";
 const CLIENT_SECRET = "7cfcae5ffe764384a6331c88fe30a8c7";
@@ -124,28 +125,47 @@ function App() {
         <h1 className="text-xl mb-4">GUESS THE SONG</h1>
         {currentTrack && (
           <div className="border-top border-bottom border-1 border-dark p-3 mb-4">
-            <Card.Title>{currentTrack.name}</Card.Title>
+            <img
+              src={currentTrack.album.images[0].url} // Use the first image (largest size)
+              alt={`${currentTrack.name} album cover`}
+              className="img-fluid mb-3 shadow" // Bootstrap class to make the image responsive
+              style={{ maxWidth: "200px", borderRadius: "10px" }} // Optional styling
+            />
+            <Card.Title className="dark-text">{currentTrack.name}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">
               {currentTrack.artists.map((artist) => artist.name).join(", ")}
             </Card.Subtitle>
-            <Button variant="primary" className="mt-3" onClick={playSnippet}>
-              Play Snippet
-            </Button>
+            <div className="d-flex justify-content-center align-items-center gap-3">
+              <i className="glyphicon glyphicon-step-backward fs-3"></i>
+              <i
+                className="bi bi-play-circle-fill fs-1"
+                onClick={playSnippet}
+              ></i>
+              <i
+                className="glyphicon glyphicon-step-forward fs-3"
+                onClick={() => selectRandomTrack(tracks)}
+              ></i>
+            </div>
           </div>
         )}
         <Form>
-          <Form.Group>
+          <Form.Group className="d-flex align-items-center">
             <Form.Control
               type="text"
               placeholder="Enter your guess..."
               value={guess}
               onChange={(e) => setGuess(e.target.value)}
+              className="rounded border-dark bg-transparent w-75"
             />
+            <Button
+              className="border-dark w-25 ms-2 button-submit" // Added margin-start (ms-2) for spacing
+              onClick={handleGuess}
+            >
+              Submit
+            </Button>
           </Form.Group>
-          <Button variant="success" className="mt-3" onClick={handleGuess}>
-            Submit Guess
-          </Button>
         </Form>
+
         <p className="mt-3">Score: {score}</p>
         <p>{feedback}</p>
         {feedback && (
